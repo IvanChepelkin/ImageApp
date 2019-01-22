@@ -29,7 +29,7 @@ public class MainActivity extends MvpAppCompatActivity implements SetImageView {
     @BindView(R.id.rec_view_list_images)
     RecyclerView RecViewlistImages;
     final int REQUEST_CAMERA = 1;
-    final int SELECT_FILE = 1;
+    final int SELECT_FILE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +37,12 @@ public class MainActivity extends MvpAppCompatActivity implements SetImageView {
         setContentView(R.layout.activity_main);
         // Привязываем наши вюшки к этому классу
         ButterKnife.bind(this);
+        originalImage.setImageResource(R.drawable.picture);
     }
 
     @OnClick(R.id.originalImage)
     void setImage() {
-        final String[] items = {"Camera", "Gallery", "Cancel"};
+        final CharSequence[] items = {"Camera", "Gallery", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Add image");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -110,11 +111,11 @@ public class MainActivity extends MvpAppCompatActivity implements SetImageView {
 
                 Bundle bundle = data.getExtras();
                 final Bitmap bmp = (Bitmap) bundle.get("data");
-                // ivImage.setImageBitmap(bmp);
+                originalImage.setImageBitmap(bmp);
 
             } else if (requestCode == SELECT_FILE) {
-
                 Uri selectedImageUri = data.getData();
+                originalImage.setImageResource(0);
                 originalImage.setImageURI(selectedImageUri);
             }
 

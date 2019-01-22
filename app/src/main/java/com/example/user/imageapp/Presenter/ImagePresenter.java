@@ -7,7 +7,7 @@ import com.arellomobile.mvp.MvpPresenter;
 @InjectViewState
 public class ImagePresenter extends MvpPresenter<SetImageView> {
 
-    public void loadImageFromCamers(int i, String[] items) {
+    public void loadImageFromCamers(int i, CharSequence[] items) {
         if (items[i].equals("Camera")) {
             getViewState().setImageFromCamera();
 
