@@ -1,11 +1,11 @@
 package com.example.user.imageapp.presenter;
 
-import com.arellomobile.mvp.MvpView;
+import android.content.Intent;
 
-public interface SetImageView extends MvpView {
-    void setImageFromCamera();
+public interface SetImageView  {
+    void setImageFromCamera(Intent intent);
 
-    void setImageFromGallery();
+    void setImageFromGallery(Intent intent);
 
     void setImage(int id);
 

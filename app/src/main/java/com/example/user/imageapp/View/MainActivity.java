@@ -8,11 +8,10 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
-import com.arellomobile.mvp.MvpAppCompatActivity;
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.user.imageapp.presenter.ImagePresenter;
 import com.example.user.imageapp.presenter.SetImageView;
 import com.example.user.imageapp.R;
@@ -21,9 +20,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends MvpAppCompatActivity implements SetImageView {
-    @InjectPresenter
-    ImagePresenter presenter;
+public class MainActivity extends AppCompatActivity implements SetImageView {
+
+    private ImagePresenter imagePresenter;
+
     @BindView(R.id.originalImage)
     ImageView originalImage;
     @BindView(R.id.rec_view_list_images)
@@ -37,18 +37,33 @@ public class MainActivity extends MvpAppCompatActivity implements SetImageView {
         setContentView(R.layout.activity_main);
         // Привязываем наши вюшки к этому классу
         ButterKnife.bind(this);
+
+        imagePresenter = new ImagePresenter(this);
         originalImage.setImageResource(R.drawable.picture);
+
     }
 
     @OnClick(R.id.originalImage)
     void setImage() {
-        final CharSequence[] items = {"Camera", "Gallery", "Cancel"};
+        final CharSequence[] items = {"Camera", "Gallery"};
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Add image");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                presenter.loadImageFromCamers(i, items);
+
+                switch (i) {
+                    case 0: {
+                        imagePresenter.setFromCamera();
+                        break;
+                    }
+                    case 1: {
+                        imagePresenter.setFromGallery();
+                        break;
+                    }
+
+                }
+
             }
         });
         builder.show();
@@ -69,17 +84,14 @@ public class MainActivity extends MvpAppCompatActivity implements SetImageView {
 
     }
 
-
     @Override
-    public void setImageFromCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    public void setImageFromCamera(Intent intent) {
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
     @Override
-    public void setImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
+    public void setImageFromGallery(Intent intent) {
+
         startActivityForResult(intent, SELECT_FILE);
     }
 
@@ -118,7 +130,6 @@ public class MainActivity extends MvpAppCompatActivity implements SetImageView {
                 originalImage.setImageResource(0);
                 originalImage.setImageURI(selectedImageUri);
             }
-
         }
     }
 }

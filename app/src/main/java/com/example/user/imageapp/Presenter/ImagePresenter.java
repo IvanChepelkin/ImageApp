@@ -1,19 +1,26 @@
 package com.example.user.imageapp.presenter;
 
+import android.content.Intent;
+import android.provider.MediaStore;
 
-import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
+public class ImagePresenter {
+    private SetImageView setImageView;
 
-@InjectViewState
-public class ImagePresenter extends MvpPresenter<SetImageView> {
+    public ImagePresenter(SetImageView setImageView) {
+        this.setImageView = setImageView;
+    }
 
-    public void loadImageFromCamers(int i, CharSequence[] items) {
-        if (items[i].equals("Camera")) {
-            getViewState().setImageFromCamera();
+    public void setFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        setImageView.setImageFromGallery(intent);
 
-        } else if (items[i].equals("Gallery")) {
-            getViewState().setImageFromGallery();
-        }
+    }
+
+    public void setFromCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        setImageView.setImageFromCamera(intent);
+
     }
 
 
